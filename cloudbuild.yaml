@@ -17,3 +17,5 @@ steps:
       ]
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "${PROJECT_ID}:${COMMIT_SHA}"]
+options:
+  logging: CLOUD_LOGGING_ONLY
