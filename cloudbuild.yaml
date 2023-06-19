@@ -1,0 +1,19 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "${PROJECT_ID}:${COMMIT_SHA}",
+        "--build-arg",
+        "GOOGLE_CLIENT_ID=${_GOOGLE_CLIENT_ID}",
+        "--build-arg",
+        "GOOGLE_CLIENT_SECRET=${_GOOGLE_CLIENT_SECRET}",
+        "--build-arg",
+        "NEXTAUTH_SECRET=${_NEXTAUTH_SECRET}",
+        "--build-arg",
+        "NEXTAUTH_URL=${_NEXTAUTH_URL}",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "${PROJECT_ID}:${COMMIT_SHA}"]
