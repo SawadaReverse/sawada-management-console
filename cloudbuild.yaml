@@ -4,7 +4,7 @@ steps:
       [
         "build",
         "-t",
-        "${PROJECT_ID}:${COMMIT_SHA}",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/sawada-management-console/image:$COMMIT_SHA",
         "--build-arg",
         "GOOGLE_CLIENT_ID=${_GOOGLE_CLIENT_ID}",
         "--build-arg",
@@ -15,7 +15,8 @@ steps:
         "NEXTAUTH_URL=${_NEXTAUTH_URL}",
         ".",
       ]
-  - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "${PROJECT_ID}:${COMMIT_SHA}"]
+
+images:
+  - "us-central1-docker.pkg.dev/$PROJECT_ID/sawada-management-console/image:$COMMIT_SHA"
 options:
   logging: CLOUD_LOGGING_ONLY
