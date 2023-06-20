@@ -27,18 +27,18 @@ steps:
     args:
       [
         "-c",
-        "gcloud run services update sawada-management-console --update-env-vars GOOGLE_CLIENT_ID=$$GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET=$$GOOGLE_CLIENT_SECRET,NEXTAUTH_SECRET=$$NEXTAUTH_SECRET,NEXTAUTH_URL=$$NEXTAUTH_URL"
+        "gcloud run services update sawada-management-console --update-env-vars GOOGLE_CLIENT_ID=$$GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET=$$GOOGLE_CLIENT_SECRET,NEXTAUTH_SECRET=$$NEXTAUTH_SECRET,NEXTAUTH_URL=$$NEXTAUTH_URL",
       ]
 availableSecrets:
   secretManager:
     - versionName: projects/$PROJECT_ID/secrets/GOOGLE_CLIENT_ID/versions/1
-    env: GOOGLE_CLIENT_ID
+      env: GOOGLE_CLIENT_ID
     - versionName: projects/$PROJECT_ID/secrets/GOOGLE_CLIENT_SECRET/versions/1
-    env: GOOGLE_CLIENT_SECRET
+      env: GOOGLE_CLIENT_SECRET
     - versionName: projects/$PROJECT_ID/secrets/NEXTAUTH_SECRET/versions/1
-    env: NEXTAUTH_SECRET
+      env: NEXTAUTH_SECRET
     - versionName: projects/$PROJECT_ID/secrets/NEXTAUTH_URL/versions/1
-    env: NEXTAUTH_URL
+      env: NEXTAUTH_URL
 
 images:
   - gcr.io/$PROJECT_ID/sawada-management-console/image
