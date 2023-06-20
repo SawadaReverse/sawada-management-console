@@ -18,7 +18,9 @@ ENV NEXTAUTH_SECRET ${NEXTAUTH_SECRET}
 ENV NEXTAUTH_URL ${NEXTAUTH_URL}
 
 WORKDIR /app
-COPY --from=build-image /app/ /app/
+COPY --from=build-image /app/.next /app/.next
+COPY --from=build-image /app/node_modules /app/node_modules
+COPY --from=build-image /app/package.json /app/package.json
 
-EXPOSE 3000
+EXPOSE 8080
 CMD [ "yarn", "start" ]
