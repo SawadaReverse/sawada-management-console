@@ -27,7 +27,7 @@ steps:
     args:
       [
         "-c",
-        "gcloud run services update sawada-management-console --update-env-vars GOOGLE_CLIENT_ID=$$GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET=$$GOOGLE_CLIENT_SECRET,NEXTAUTH_SECRET=$$NEXTAUTH_SECRET,NEXTAUTH_URL=$$NEXTAUTH_URL --region us-central1",
+        "gcloud run services update sawada-management-console --concurrency 1 --cpu 1 --update-env-vars GOOGLE_CLIENT_ID=$$GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET=$$GOOGLE_CLIENT_SECRET,NEXTAUTH_SECRET=$$NEXTAUTH_SECRET,NEXTAUTH_URL=$$NEXTAUTH_URL --region us-central1",
       ]
     secretEnv:
       [
