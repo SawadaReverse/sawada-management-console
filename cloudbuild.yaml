@@ -23,9 +23,11 @@ steps:
         "--concurrency",
         "1",
         "--cpu",
-        "2",
+        "1",
         "--cpu-boost",
         "--no-cpu-throttling",
+        "--memory",
+        "1Gi",
       ]
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: bash
