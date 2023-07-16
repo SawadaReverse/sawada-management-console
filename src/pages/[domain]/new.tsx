@@ -13,15 +13,10 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  CancelOutlined,
-  DoNotDisturbOnOutlined,
-  TaskAlt,
-} from "@mui/icons-material";
 import { createLabelRequest } from "@/types/api/requests/gmailLabel";
 import { createFilterRequest } from "@/types/api/requests/gmailFilter";
 import { useRouter } from "next/router";
-import NewGroupDialog, { processStatus } from "@/components/new-group-dialog";
+import ProgressDialog, { Progress } from "@/components/progressDialog";
 
 export default function CreateGroup() {
   type GroupForm = {
@@ -64,12 +59,12 @@ export default function CreateGroup() {
 
   const router = useRouter();
   const [dialogIsVisible, setDialogIsVisible] = useState(false);
-  const [insertGroupStatus, setInsertGroupStatus] =
-    useState<processStatus>("IN_PROGRESS");
-  const [createLabelStatus, setCreateLabelStatus] =
-    useState<processStatus>("CANCELED");
-  const [createFilterStatus, setCreateFilterStatus] =
-    useState<processStatus>("CANCELED");
+  const [insertGroupProgress, setInsertGroupProgress] =
+    useState<Progress>("IN_PROGRESS");
+  const [createLabelProgress, setCreateLabelProgress] =
+    useState<Progress>("CANCELED");
+  const [createFilterProgress, setCreateFilterProgress] =
+    useState<Progress>("CANCELED");
 
   const validateRules = {
     email: {
@@ -100,18 +95,18 @@ export default function CreateGroup() {
     });
     const groupBody = await groupResponse.json();
     if (isSuccessResponse(groupBody)) {
-      setInsertGroupStatus("COMPLETED");
+      setInsertGroupProgress("COMPLETED");
     }
     if (isFailedResponse(groupBody)) {
       setErrorMessage(groupBody.message);
-      setInsertGroupStatus("FAILED");
-      setCreateLabelStatus("CANCELED");
-      setCreateFilterStatus("CANCELED");
+      setInsertGroupProgress("FAILED");
+      setCreateLabelProgress("CANCELED");
+      setCreateFilterProgress("CANCELED");
       return;
     }
 
     if (isCreateLabelChecked) {
-      setCreateLabelStatus("IN_PROGRESS");
+      setCreateLabelProgress("IN_PROGRESS");
       const labelRequest: createLabelRequest = {
         name: form.email.split("@")[0],
       };
@@ -121,17 +116,17 @@ export default function CreateGroup() {
       });
       const labelBody = await labelResponse.json();
       if (isSuccessResponse(labelBody)) {
-        setCreateLabelStatus("COMPLETED");
+        setCreateLabelProgress("COMPLETED");
       }
       if (isFailedResponse(labelBody)) {
         setErrorMessage(labelBody.message);
-        setCreateLabelStatus("FAILED");
-        setCreateFilterStatus("CANCELED");
+        setCreateLabelProgress("FAILED");
+        setCreateFilterProgress("CANCELED");
         return;
       }
 
       if (isCreateFilterChecked) {
-        setCreateFilterStatus("IN_PROGRESS");
+        setCreateFilterProgress("IN_PROGRESS");
         const filterRequest: createFilterRequest = {
           toMailAddress: form.email,
           addLabelIds: [labelBody.data.id],
@@ -143,11 +138,11 @@ export default function CreateGroup() {
         });
         const filterBody = await filterResponse.json();
         if (isSuccessResponse(filterBody)) {
-          setCreateFilterStatus("COMPLETED");
+          setCreateFilterProgress("COMPLETED");
         }
         if (isFailedResponse(filterBody)) {
           setErrorMessage(filterBody.message);
-          setCreateFilterStatus("FAILED");
+          setCreateFilterProgress("FAILED");
           return;
         }
       }
@@ -223,11 +218,12 @@ export default function CreateGroup() {
         </CardContent>
       </Card>
 
-      <NewGroupDialog
+      <ProgressDialog
         isVisible={dialogIsVisible}
-        insertGroupStatus={insertGroupStatus}
-        createLabelStatus={createLabelStatus}
-        createFilterStatus={createFilterStatus}
+        type="CREATE"
+        groupProgress={insertGroupProgress}
+        labelProgress={createLabelProgress}
+        filterProgress={createFilterProgress}
       />
     </>
   );

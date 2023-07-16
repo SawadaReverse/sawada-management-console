@@ -8,12 +8,6 @@ import {
   CardHeader,
   CardContent,
   Fab,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
   TableRow,
   TableCell,
   Table,
@@ -21,10 +15,6 @@ import {
   TableBody,
   Alert,
   AlertTitle,
-  FormControlLabel,
-  Checkbox,
-  Box,
-  CircularProgress,
 } from "@mui/material";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -34,13 +24,9 @@ import { filter } from "@/libs/google-api/types/gmailFilter";
 import { label } from "@/libs/google-api/types/gmailLabel";
 import { StatusCodes } from "http-status-codes";
 import { group } from "@/libs/google-api/types/directory";
-import {
-  CancelOutlined,
-  CheckBox,
-  DoNotDisturbOnOutlined,
-  TaskAlt,
-} from "@mui/icons-material";
 import { BadRequestError } from "@/types/api/error";
+import ProgressDialog, { Progress } from "@/components/progressDialog";
+import DeleteConfirmDialog from "@/components/deleteConfirmDialog";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { groupKey } = context.query;
@@ -133,18 +119,20 @@ export default function Home(
 ) {
   const router = useRouter();
   const [confirmDialogIsVisible, setConfirmDialogIsVisible] = useState(false);
-  const [isDeleteLabelChecked, setIsDeleteLabelChecked] = useState(false);
-  const [isDeleteFilterChecked, setIsDeleteFilterChecked] = useState(false);
-  const closeConfirmDialog = () => setConfirmDialogIsVisible(false);
+  const [isLabelChecked, setIsLabelChecked] = useState(false);
+  const [isFilterChecked, setIsFilterChecked] = useState(false);
   const openConfirmDialog = () => setConfirmDialogIsVisible(true);
 
   const [progressDialogIsVisible, setProgressDialogIsVisible] = useState(false);
-  const [groupDeleteIsComplete, setGroupDeleteIsComplete] = useState(0);
-  const [labelDeleteIsComplete, setLabelDeleteIsComplete] = useState(0);
-  const [filterDeleteIsComplete, setFilterDeleteIsComplete] = useState(0);
+  const [deleteGroupProgress, setDeleteGroupProgress] =
+    useState<Progress>("IN_PROGRESS");
+  const [deleteLabelProgress, setDeleteLabelProgress] =
+    useState<Progress>("CANCELED");
+  const [deleteFilterProgress, setDeleteFilterProgress] =
+    useState<Progress>("CANCELED");
 
   const deleteGroup = async () => {
-    closeConfirmDialog();
+    setConfirmDialogIsVisible(false);
     setProgressDialogIsVisible(true);
     const groupKey = props.data.group.id;
     const groupResponse = await fetch(`/api/group/?groupKey=${groupKey}`, {
@@ -152,19 +140,21 @@ export default function Home(
     });
     const groupBody = await groupResponse.json();
     if (isSuccessResponse(groupBody)) {
-      setGroupDeleteIsComplete(1);
+      setDeleteGroupProgress("COMPLETED");
     }
     if (isFailedResponse(groupBody)) {
-      setGroupDeleteIsComplete(-1);
-      setLabelDeleteIsComplete(-2);
-      setFilterDeleteIsComplete(-2);
+      setDeleteGroupProgress("FAILED");
+      setDeleteLabelProgress("CANCELED");
+      setDeleteFilterProgress("CANCELED");
       return;
     }
 
-    if (isDeleteLabelChecked) {
+    if (isLabelChecked) {
       if (!props.data.label) {
         throw new BadRequestError();
       }
+
+      setDeleteLabelProgress("IN_PROGRESS");
       const labelResponse = await fetch(
         `/api/label/?id=${props.data.label.id}`,
         {
@@ -173,19 +163,21 @@ export default function Home(
       );
       const labelBody = await labelResponse.json();
       if (isSuccessResponse(labelBody)) {
-        setLabelDeleteIsComplete(1);
+        setDeleteLabelProgress("COMPLETED");
       }
       if (isFailedResponse(labelBody)) {
-        setLabelDeleteIsComplete(-1);
-        setFilterDeleteIsComplete(-2);
+        setDeleteLabelProgress("FAILED");
+        setDeleteFilterProgress("CANCELED");
         return;
       }
     }
 
-    if (isDeleteFilterChecked) {
+    if (isFilterChecked) {
       if (!props.data.filter) {
         throw new BadRequestError();
       }
+
+      setDeleteFilterProgress("IN_PROGRESS");
       const filterResponse = await fetch(
         `/api/filter/?id=${props.data.filter.id}`,
         {
@@ -194,10 +186,10 @@ export default function Home(
       );
       const filterBody = await filterResponse.json();
       if (isSuccessResponse(filterBody)) {
-        setFilterDeleteIsComplete(1);
+        setDeleteFilterProgress("COMPLETED");
       }
       if (isFailedResponse(filterBody)) {
-        setFilterDeleteIsComplete(-1);
+        setDeleteFilterProgress("FAILED");
         return;
       }
     }
@@ -251,63 +243,23 @@ export default function Home(
         </CardContent>
       </Card>
 
-      <Dialog open={confirmDialogIsVisible} onClose={closeConfirmDialog}>
-        <DialogTitle>Group delete confirm</DialogTitle>
-        <DialogContent>
-          <FormControlLabel
-            control={
-              <Checkbox
-                onChange={(e) => setIsDeleteLabelChecked(e.target.checked)}
-                checked={isDeleteLabelChecked}
-              />
-            }
-            label="delete label"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                onChange={(e) => setIsDeleteFilterChecked(e.target.checked)}
-                checked={isDeleteFilterChecked}
-              />
-            }
-            label="delete filter"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeConfirmDialog}>No</Button>
-          <Button onClick={deleteGroup}>Yes</Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteConfirmDialog
+        isVisible={confirmDialogIsVisible}
+        setIsVisible={setConfirmDialogIsVisible}
+        onSubmit={deleteGroup}
+        isLabelChecked={isLabelChecked}
+        setIsLabelChecked={setIsLabelChecked}
+        isFilterChecked={isFilterChecked}
+        setIsFilterChecked={setIsFilterChecked}
+      />
 
-      <Dialog open={progressDialogIsVisible}>
-        <DialogTitle>Processing...</DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: "flex" }}>
-            {groupDeleteIsComplete === 1 && <TaskAlt />}
-            {groupDeleteIsComplete === 0 && <CircularProgress />}
-            {groupDeleteIsComplete === -1 && <CancelOutlined />}
-            Group delete
-          </Box>
-          {isDeleteLabelChecked && (
-            <Box sx={{ display: "flex" }}>
-              {labelDeleteIsComplete === 1 && <TaskAlt />}
-              {labelDeleteIsComplete === 0 && <CircularProgress />}
-              {labelDeleteIsComplete === -1 && <CancelOutlined />}
-              {labelDeleteIsComplete === -2 && <DoNotDisturbOnOutlined />}
-              Label delete
-            </Box>
-          )}
-          {isDeleteFilterChecked && (
-            <Box sx={{ display: "flex" }}>
-              {filterDeleteIsComplete === 1 && <TaskAlt />}
-              {filterDeleteIsComplete === 0 && <CircularProgress />}
-              {filterDeleteIsComplete === -1 && <CancelOutlined />}
-              {filterDeleteIsComplete === -2 && <DoNotDisturbOnOutlined />}
-              Filter delete
-            </Box>
-          )}
-        </DialogContent>
-      </Dialog>
+      <ProgressDialog
+        isVisible={progressDialogIsVisible}
+        type="DELETE"
+        groupProgress={deleteGroupProgress}
+        filterProgress={deleteFilterProgress}
+        labelProgress={deleteLabelProgress}
+      />
 
       <Fab
         color="primary"

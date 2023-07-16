@@ -11,16 +11,17 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-export type processStatus = "IN_PROGRESS" | "COMPLETED" | "FAILED" | "CANCELED";
+export type Progress = "IN_PROGRESS" | "COMPLETED" | "FAILED" | "CANCELED";
 
 type Props = {
   isVisible: boolean;
-  insertGroupStatus: processStatus;
-  createLabelStatus: processStatus;
-  createFilterStatus: processStatus;
+  type: "CREATE" | "DELETE";
+  groupProgress: Progress;
+  labelProgress: Progress;
+  filterProgress: Progress;
 };
 
-const statusIcon = (status: processStatus) => {
+const statusIcon = (status: Progress) => {
   switch (status) {
     case "IN_PROGRESS":
       return <CircularProgress />;
@@ -33,24 +34,27 @@ const statusIcon = (status: processStatus) => {
   }
 };
 
-export default function NewGroupDialog(props: Props) {
+export default function ProgressDialog(props: Props) {
   return (
     <Dialog open={props.isVisible}>
       <DialogTitle>Processing...</DialogTitle>
       <DialogContent>
         <Box sx={{ display: "flex" }}>
-          {statusIcon(props.insertGroupStatus)}
-          Group insert
+          {statusIcon(props.groupProgress)}
+          {props.type === "CREATE" && "Group insert"}
+          {props.type === "DELETE" && "Group delete"}
         </Box>
 
         <Box sx={{ display: "flex" }}>
-          {statusIcon(props.createLabelStatus)}
-          Label insert
+          {statusIcon(props.labelProgress)}
+          {props.type === "CREATE" && "Label insert"}
+          {props.type === "DELETE" && "Label delete"}
         </Box>
 
         <Box sx={{ display: "flex" }}>
-          {statusIcon(props.createFilterStatus)}
-          Filter insert
+          {statusIcon(props.filterProgress)}
+          {props.type === "CREATE" && "Filter insert"}
+          {props.type === "DELETE" && "Filter delete"}
         </Box>
       </DialogContent>
     </Dialog>
