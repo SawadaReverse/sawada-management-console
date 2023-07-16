@@ -1,7 +1,7 @@
 import { GMAIL_FILTER_URL } from "./constants";
 import { InternalServerError, NotFoundError } from "@/types/api/error";
 import { SuccessResponse, FailedResponse } from "@/types/api/response";
-import { filter, filterList } from "./types/gmail-filter";
+import { filter, filterList } from "./types/gmailFilter";
 import axios from "axios";
 import { StatusCodes } from "http-status-codes";
 import { ApiError } from "next/dist/server/api-utils";
@@ -11,7 +11,7 @@ import {
   createFilterRequest,
   deleteFilterRequest,
   getFilterRequest,
-} from "@/types/api/requests/gmail_filter";
+} from "@/types/api/requests/gmailFilter";
 
 export class GmailFilterAPI extends GoogleApi {
   constructor(session: Session) {
