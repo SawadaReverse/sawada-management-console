@@ -6,7 +6,7 @@ import {
   isFailedResponse,
   isSuccessResponse,
 } from "@/types/api/response";
-import { groupList } from "@/types/google_api_client/directory";
+import { groupList } from "@/libs/google-api/types/directory";
 import { useRouter } from "next/router";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
