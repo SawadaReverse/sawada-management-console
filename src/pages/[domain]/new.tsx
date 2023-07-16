@@ -2,30 +2,21 @@ import { insertGroupRequest } from "@/types/api/requests/directory";
 import { isFailedResponse, isSuccessResponse } from "@/types/api/response";
 import {
   Alert,
-  Box,
   Button,
   Card,
   CardContent,
   CardHeader,
   Checkbox,
-  CircularProgress,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   FormControlLabel,
   Stack,
   TextField,
 } from "@mui/material";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  CancelOutlined,
-  DoNotDisturbOnOutlined,
-  TaskAlt,
-} from "@mui/icons-material";
 import { createLabelRequest } from "@/types/api/requests/gmail_label";
 import { createFilterRequest } from "@/types/api/requests/gmail_filter";
 import { useRouter } from "next/router";
+import NewGroupDialog, { processStatus } from "@/components/new-group-dialog";
 
 export default function CreateGroup() {
   type GroupForm = {
@@ -68,9 +59,12 @@ export default function CreateGroup() {
 
   const router = useRouter();
   const [dialogIsVisible, setDialogIsVisible] = useState(false);
-  const [groupInsertIsComplete, setGroupInsertIsComplete] = useState(0);
-  const [labelCreateIsComplete, setLabelCreateIsComplete] = useState(0);
-  const [filterCreateIsComplete, setFilterCreateIsComplete] = useState(0);
+  const [insertGroupStatus, setInsertGroupStatus] =
+    useState<processStatus>("IN_PROGRESS");
+  const [createLabelStatus, setCreateLabelStatus] =
+    useState<processStatus>("CANCELED");
+  const [createFilterStatus, setCreateFilterStatus] =
+    useState<processStatus>("CANCELED");
 
   const validateRules = {
     email: {
@@ -101,18 +95,18 @@ export default function CreateGroup() {
     });
     const groupBody = await groupResponse.json();
     if (isSuccessResponse(groupBody)) {
-      // TODO: Generics つきの type guard がうまくいかない、要検討
-      setGroupInsertIsComplete(1);
+      setInsertGroupStatus("COMPLETED");
     }
     if (isFailedResponse(groupBody)) {
       setErrorMessage(groupBody.message);
-      setGroupInsertIsComplete(-1);
-      setLabelCreateIsComplete(-2);
-      setFilterCreateIsComplete(-2);
+      setInsertGroupStatus("FAILED");
+      setCreateLabelStatus("CANCELED");
+      setCreateFilterStatus("CANCELED");
       return;
     }
 
     if (isCreateLabelChecked) {
+      setCreateLabelStatus("IN_PROGRESS");
       const labelRequest: createLabelRequest = {
         name: form.email.split("@")[0],
       };
@@ -122,16 +116,17 @@ export default function CreateGroup() {
       });
       const labelBody = await labelResponse.json();
       if (isSuccessResponse(labelBody)) {
-        setLabelCreateIsComplete(1);
+        setCreateLabelStatus("COMPLETED");
       }
       if (isFailedResponse(labelBody)) {
         setErrorMessage(labelBody.message);
-        setLabelCreateIsComplete(-1);
-        setFilterCreateIsComplete(-2);
+        setCreateLabelStatus("FAILED");
+        setCreateFilterStatus("CANCELED");
         return;
       }
 
       if (isCreateFilterChecked) {
+        setCreateFilterStatus("IN_PROGRESS");
         const filterRequest: createFilterRequest = {
           toMailAddress: form.email,
           addLabelIds: [labelBody.data.id],
@@ -143,11 +138,11 @@ export default function CreateGroup() {
         });
         const filterBody = await filterResponse.json();
         if (isSuccessResponse(filterBody)) {
-          setFilterCreateIsComplete(1);
+          setCreateFilterStatus("COMPLETED");
         }
         if (isFailedResponse(filterBody)) {
           setErrorMessage(filterBody.message);
-          setFilterCreateIsComplete(-1);
+          setCreateFilterStatus("FAILED");
           return;
         }
       }
@@ -223,35 +218,12 @@ export default function CreateGroup() {
         </CardContent>
       </Card>
 
-      <Dialog open={dialogIsVisible}>
-        <DialogTitle>Processing...</DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: "flex" }}>
-            {groupInsertIsComplete === 1 && <TaskAlt />}
-            {groupInsertIsComplete === 0 && <CircularProgress />}
-            {groupInsertIsComplete === -1 && <CancelOutlined />}
-            Group insert
-          </Box>
-          {isCreateLabelChecked && (
-            <Box sx={{ display: "flex" }}>
-              {labelCreateIsComplete === 1 && <TaskAlt />}
-              {labelCreateIsComplete === 0 && <CircularProgress />}
-              {labelCreateIsComplete === -1 && <CancelOutlined />}
-              {labelCreateIsComplete === -2 && <DoNotDisturbOnOutlined />}
-              Label insert
-            </Box>
-          )}
-          {isCreateFilterChecked && (
-            <Box sx={{ display: "flex" }}>
-              {filterCreateIsComplete === 1 && <TaskAlt />}
-              {filterCreateIsComplete === 0 && <CircularProgress />}
-              {filterCreateIsComplete === -1 && <CancelOutlined />}
-              {filterCreateIsComplete === -2 && <DoNotDisturbOnOutlined />}
-              Filter insert
-            </Box>
-          )}
-        </DialogContent>
-      </Dialog>
+      <NewGroupDialog
+        isVisible={dialogIsVisible}
+        insertGroupStatus={insertGroupStatus}
+        createLabelStatus={createLabelStatus}
+        createFilterStatus={createFilterStatus}
+      />
     </>
   );
 }
