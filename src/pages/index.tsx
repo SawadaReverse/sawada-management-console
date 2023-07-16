@@ -2,7 +2,7 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardActionArea from "@mui/material/CardActionArea";
-import { domainList } from "@/types/google_api_client/directory";
+import { domainList } from "@/libs/google-api/types/directory";
 import {
   isSuccessResponse,
   SuccessResponse,

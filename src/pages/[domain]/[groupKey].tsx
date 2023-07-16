@@ -30,10 +30,10 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { filter } from "@/types/google_api_client/gmail_filter";
-import { label } from "@/types/google_api_client/gmail_label";
+import { filter } from "@/libs/google-api/types/gmail_filter";
+import { label } from "@/libs/google-api/types/gmail_label";
 import { StatusCodes } from "http-status-codes";
-import { group } from "@/types/google_api_client/directory";
+import { group } from "@/libs/google-api/types/directory";
 import {
   CancelOutlined,
   CheckBox,
