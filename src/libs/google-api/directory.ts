@@ -11,11 +11,11 @@ import {
   group,
   groupList,
   member,
-} from "@/types/google_api_client/directory";
+} from "@/libs/google-api/types/directory";
 import axios from "axios";
 import { StatusCodes } from "http-status-codes";
 import { ApiError } from "next/dist/server/api-utils";
-import { GoogleApi } from "@/lib/google_api_client/client";
+import { GoogleApi } from "@/libs/google-api/client";
 import { Session } from "next-auth";
 
 export class DirectoryAPI extends GoogleApi {

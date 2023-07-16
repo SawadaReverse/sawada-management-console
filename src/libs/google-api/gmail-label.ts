@@ -6,7 +6,7 @@ import {
   getLabelRequest,
 } from "@/types/api/requests/gmail_label";
 import { GMAIL_LABELS_URL } from "@/constants/google_api_url";
-import { label, labels } from "@/types/google_api_client/gmail_label";
+import { label, labels } from "@/libs/google-api/types/gmail-label";
 import axios from "axios";
 import {
   ApiError,

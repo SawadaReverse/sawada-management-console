@@ -7,8 +7,8 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { GmailFilterAPI } from "@/lib/google_api_client/gmail_filter";
-import { apiHandler } from "@/lib/api_handlers";
+import { GmailFilterAPI } from "@/libs/google-api/gmail-filter";
+import { apiHandler } from "@/libs/api_handlers";
 
 const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { query } = req;
