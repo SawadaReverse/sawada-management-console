@@ -1,4 +1,4 @@
-import CustomBreadcrumbs from "@/components/custom-breadcrumbs";
+import CustomBreadcrumbs from "@/components/customBreadcrumbs";
 import NavBar from "@/components/nav-bar";
 import { LayoutProps } from "@/types/layouts";
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
