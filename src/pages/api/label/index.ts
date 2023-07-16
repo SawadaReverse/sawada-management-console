@@ -8,7 +8,7 @@ import {
 import { authOptions } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { GmailLabelAPI } from "@/libs/google-api/gmailLabel";
-import { apiHandler } from "@/libs/api_handlers";
+import { apiHandler } from "@/libs/api-handler/apiHandlers";
 
 const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { query } = req;
