@@ -4,9 +4,9 @@ import {
   createLabelRequest,
   deleteLabelRequest,
   getLabelRequest,
-} from "@/types/api/requests/gmail_label";
+} from "@/types/api/requests/gmailLabel";
 import { GMAIL_LABELS_URL } from "./constants";
-import { label, labels } from "./types/gmail-label";
+import { label, labels } from "./types/gmailLabel";
 import axios from "axios";
 import {
   ApiError,

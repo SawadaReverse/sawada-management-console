@@ -3,11 +3,11 @@ import {
   isCreateFilterRequest,
   isDeleteFilterRequest,
   isGetFilterRequest,
-} from "@/types/api/requests/gmail_filter";
+} from "@/types/api/requests/gmailFilter";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { GmailFilterAPI } from "@/libs/google-api/gmail-filter";
+import { GmailFilterAPI } from "@/libs/google-api/gmailFilter";
 import { apiHandler } from "@/libs/api_handlers";
 
 const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {

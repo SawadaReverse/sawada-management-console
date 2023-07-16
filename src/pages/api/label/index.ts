@@ -4,10 +4,10 @@ import {
   isCreateLabelRequest,
   isDeleteLabelRequest,
   isGetLabelRequest,
-} from "@/types/api/requests/gmail_label";
+} from "@/types/api/requests/gmailLabel";
 import { authOptions } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth";
-import { GmailLabelAPI } from "@/libs/google-api/gmail_label";
+import { GmailLabelAPI } from "@/libs/google-api/gmailLabel";
 import { apiHandler } from "@/libs/api_handlers";
 
 const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {

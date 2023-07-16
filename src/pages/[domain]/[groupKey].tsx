@@ -30,8 +30,8 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { filter } from "@/libs/google-api/types/gmail_filter";
-import { label } from "@/libs/google-api/types/gmail_label";
+import { filter } from "@/libs/google-api/types/gmailFilter";
+import { label } from "@/libs/google-api/types/gmailLabel";
 import { StatusCodes } from "http-status-codes";
 import { group } from "@/libs/google-api/types/directory";
 import {
