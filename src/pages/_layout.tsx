@@ -1,5 +1,5 @@
 import CustomBreadcrumbs from "@/components/customBreadcrumbs";
-import NavBar from "@/components/nav-bar";
+import NavBar from "@/components/navBar";
 import { LayoutProps } from "@/types/layouts";
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { useRouter } from "next/router";
