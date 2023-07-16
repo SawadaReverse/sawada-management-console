@@ -2,8 +2,8 @@ import { UnauthorizedError } from "@/types/api/error";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import { apiHandler } from "@/lib/api_handlers";
-import { DirectoryAPI } from "@/lib/google_api_client/directory";
+import { apiHandler } from "@/libs/api_handlers";
+import { DirectoryAPI } from "@/libs/google-api/directory";
 
 const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);

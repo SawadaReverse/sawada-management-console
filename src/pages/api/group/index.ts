@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { apiHandler } from "@/lib/api_handlers";
+import { apiHandler } from "@/libs/api_handlers";
 import { BadRequestError, UnauthorizedError } from "@/types/api/error";
 import {
   groupKeyRequest,
@@ -10,7 +10,7 @@ import {
 } from "@/types/api/requests/directory";
 import { isFailedResponse } from "@/types/api/response";
 import { StatusCodes } from "http-status-codes";
-import { DirectoryAPI } from "@/lib/google_api_client/directory";
+import { DirectoryAPI } from "@/libs/google-api/directory";
 
 const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { query } = req;
