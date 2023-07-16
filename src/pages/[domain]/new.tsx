@@ -13,8 +13,13 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { createLabelRequest } from "@/types/api/requests/gmail_label";
-import { createFilterRequest } from "@/types/api/requests/gmail_filter";
+import {
+  CancelOutlined,
+  DoNotDisturbOnOutlined,
+  TaskAlt,
+} from "@mui/icons-material";
+import { createLabelRequest } from "@/types/api/requests/gmailLabel";
+import { createFilterRequest } from "@/types/api/requests/gmailFilter";
 import { useRouter } from "next/router";
 import NewGroupDialog, { processStatus } from "@/components/new-group-dialog";
 

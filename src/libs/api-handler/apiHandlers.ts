@@ -1,5 +1,5 @@
 import { MethodNotAllowedError, isApiError } from "@/types/api/error";
-import { Handlers, isHttpMethod } from "@/types/api/custom_handler";
+import { Handlers, isHttpMethod } from "./types/apiHandler";
 import { FailedResponse } from "@/types/api/response";
 import { StatusCodes } from "http-status-codes";
 import { NextApiRequest, NextApiResponse } from "next";
