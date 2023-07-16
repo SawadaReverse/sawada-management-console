@@ -1,7 +1,7 @@
-import { GMAIL_FILTER_URL } from "@/constants/google_api_url";
+import { GMAIL_FILTER_URL } from "./constants";
 import { InternalServerError, NotFoundError } from "@/types/api/error";
 import { SuccessResponse, FailedResponse } from "@/types/api/response";
-import { filter, filterList } from "@/libs/google-api/types/gmail-filter";
+import { filter, filterList } from "./types/gmail-filter";
 import axios from "axios";
 import { StatusCodes } from "http-status-codes";
 import { ApiError } from "next/dist/server/api-utils";

@@ -1,4 +1,4 @@
-import { GET_DOMAINS_LIST_URL, GROUPS_URL } from "@/constants/google_api_url";
+import { GET_DOMAINS_LIST_URL, GROUPS_URL } from "./constants";
 import { InternalServerError } from "@/types/api/error";
 import {
   getGroupListRequest,
@@ -6,16 +6,11 @@ import {
   insertGroupRequest,
 } from "@/types/api/requests/directory";
 import { SuccessResponse, FailedResponse } from "@/types/api/response";
-import {
-  domainList,
-  group,
-  groupList,
-  member,
-} from "@/libs/google-api/types/directory";
+import { domainList, group, groupList, member } from "./types/directory";
 import axios from "axios";
 import { StatusCodes } from "http-status-codes";
 import { ApiError } from "next/dist/server/api-utils";
-import { GoogleApi } from "@/libs/google-api/client";
+import { GoogleApi } from "./client";
 import { Session } from "next-auth";
 
 export class DirectoryAPI extends GoogleApi {
