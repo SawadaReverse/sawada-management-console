@@ -41,20 +41,17 @@ export default function ProgressDialog(props: Props) {
       <DialogContent>
         <Box sx={{ display: "flex" }}>
           {statusIcon(props.groupProgress)}
-          {props.type === "CREATE" && "Group insert"}
-          {props.type === "DELETE" && "Group delete"}
+          {`Group ${props.type.toLowerCase()}`}
         </Box>
 
         <Box sx={{ display: "flex" }}>
           {statusIcon(props.labelProgress)}
-          {props.type === "CREATE" && "Label insert"}
-          {props.type === "DELETE" && "Label delete"}
+          {`Label ${props.type.toLowerCase()}`}
         </Box>
 
         <Box sx={{ display: "flex" }}>
           {statusIcon(props.filterProgress)}
-          {props.type === "CREATE" && "Filter insert"}
-          {props.type === "DELETE" && "Filter delete"}
+          {`Filter ${props.type.toLowerCase()}`}
         </Box>
       </DialogContent>
     </Dialog>
