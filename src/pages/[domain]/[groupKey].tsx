@@ -26,7 +26,7 @@ import { StatusCodes } from "http-status-codes";
 import { group } from "@/libs/google-api/types/directory";
 import { BadRequestError } from "@/types/api/error";
 import ProgressDialog, { Progress } from "@/components/progressDialog";
-import DeleteConfirmDialog from "@/components/deleteConfirmDialog";
+import { useDeleteConfirm } from "@/hooks/useDeleteConfirm";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { groupKey } = context.query;
@@ -118,11 +118,7 @@ export default function Home(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) {
   const router = useRouter();
-  const [confirmDialogIsVisible, setConfirmDialogIsVisible] = useState(false);
-  const [isLabelChecked, setIsLabelChecked] = useState(false);
-  const [isFilterChecked, setIsFilterChecked] = useState(false);
-  const openConfirmDialog = () => setConfirmDialogIsVisible(true);
-
+  const deleteConfim = useDeleteConfirm();
   const [progressDialogIsVisible, setProgressDialogIsVisible] = useState(false);
   const [deleteGroupProgress, setDeleteGroupProgress] =
     useState<Progress>("IN_PROGRESS");
@@ -132,7 +128,11 @@ export default function Home(
     useState<Progress>("CANCELED");
 
   const deleteGroup = async () => {
-    setConfirmDialogIsVisible(false);
+    const select = await deleteConfim.confirm();
+    if (select.action === "NO") {
+      return;
+    }
+
     setProgressDialogIsVisible(true);
     const groupKey = props.data.group.id;
     const groupResponse = await fetch(`/api/group/?groupKey=${groupKey}`, {
@@ -149,7 +149,7 @@ export default function Home(
       return;
     }
 
-    if (isLabelChecked) {
+    if (select.isLabelChecked) {
       if (!props.data.label) {
         throw new BadRequestError();
       }
@@ -172,7 +172,7 @@ export default function Home(
       }
     }
 
-    if (isFilterChecked) {
+    if (select.isFilterChecked) {
       if (!props.data.filter) {
         throw new BadRequestError();
       }
@@ -243,15 +243,7 @@ export default function Home(
         </CardContent>
       </Card>
 
-      <DeleteConfirmDialog
-        isVisible={confirmDialogIsVisible}
-        setIsVisible={setConfirmDialogIsVisible}
-        onSubmit={deleteGroup}
-        isLabelChecked={isLabelChecked}
-        setIsLabelChecked={setIsLabelChecked}
-        isFilterChecked={isFilterChecked}
-        setIsFilterChecked={setIsFilterChecked}
-      />
+      {deleteConfim.dialog()}
 
       <ProgressDialog
         isVisible={progressDialogIsVisible}
@@ -265,7 +257,7 @@ export default function Home(
         color="primary"
         aria-label="add"
         sx={{ position: "fixed", bottom: 16, right: 16 }}
-        onClick={openConfirmDialog}
+        onClick={deleteGroup}
       >
         <DeleteIcon />
       </Fab>
