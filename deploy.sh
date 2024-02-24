@@ -1,0 +1,1 @@
+docker build -t console.sawada.pro . && docker run -itd -p 3000:3000 --rm --name console.sawada.pro console.sawada.pro:latest
