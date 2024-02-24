@@ -1,0 +1,17 @@
+name: cd
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: [self-hosted]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: docker compose up
+        run: docker compose up -d --force-recreate
