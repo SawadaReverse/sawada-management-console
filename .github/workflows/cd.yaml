@@ -13,5 +13,8 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
+      - name: show current directory
+        run: pwd; ls -lAh
+
       - name: docker compose up
         run: docker compose up -d --force-recreate
