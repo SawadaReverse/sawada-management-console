@@ -10,6 +10,9 @@ on:
 jobs:
   push_imagee_to_ghcr:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
