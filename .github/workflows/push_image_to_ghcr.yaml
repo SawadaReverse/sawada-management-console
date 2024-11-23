@@ -32,4 +32,4 @@ jobs:
         if: ${{ github.ref_name == 'develop' }}
         run: |
           docker build . --tag ghcr.io/${REPO}:develop-latest
-          docker push ghcr.io/${REPO}:develop
+          docker push ghcr.io/${REPO}:develop-latest
