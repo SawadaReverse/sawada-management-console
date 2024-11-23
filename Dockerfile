@@ -11,7 +11,7 @@ WORKDIR /app
 COPY --from=build-image /app/.next /app/.next
 COPY --from=build-image /app/node_modules /app/node_modules
 COPY --from=build-image /app/package.json /app/package.json
-COPY --from=build-image /app/.env* /app/
+COPY --from=build-image /app/.env.production /app/
 
 EXPOSE 3000
 CMD [ "yarn", "start" ]
