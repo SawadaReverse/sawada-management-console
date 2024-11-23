@@ -23,7 +23,13 @@ jobs:
       - name: get lower case repository name
         id: get_repo_name
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
-      - name: Build and push
+      - name: Build and push on main
+        if: ${{ github.ref_name == 'main' }}
         run: |
-          docker build . --tag ghcr.io/${{ github.repository }}:${{ github.ref_name }}-latest
+          docker build . --tag ghcr.io/${{ github.repository }}:latest
           docker push ghcr.io/${REPO}:latest
+      - name: Build and push on develop
+        if: ${{ github.ref_name == 'develop' }}
+        run: |
+          docker build . --tag ghcr.io/${{ github.repository }}:develop-latest
+          docker push ghcr.io/${REPO}:develop
